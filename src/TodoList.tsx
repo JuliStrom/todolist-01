@@ -1,8 +1,12 @@
-import {Btn} from "./components/button/Button.tsx";
+import {Button} from "./components/button/Button.tsx";
+import {FilterValuesType} from "./App.tsx";
+
 
 type TodoListPropsType = {
     title: string,
-    tasks: Array<TaskType>
+    tasks: Array<TaskType>,
+    deleteTask: (taskId: number) => void
+    changeTodoListFilter: (newFilterValue: FilterValuesType) => void
 }
 
 export type TaskType = {
@@ -10,14 +14,10 @@ export type TaskType = {
     title: string,
     isDone: boolean
 }
-const btn_1 = "+"
-const btn_2 = "All"
-const btn_3 = "Active"
-const btn_4 = "Completed"
 
 
 
-export const TodoList = (props: TodoListPropsType) => {
+export const TodoList = ({title, tasks, deleteTask, changeTodoListFilter}: TodoListPropsType) => {
     // const tasksList = props.tasks.length === 0
     //     ? <span>Your list is empty</span>
     //     : <ul>
@@ -30,13 +30,15 @@ export const TodoList = (props: TodoListPropsType) => {
     //         })}
     //     </ul>
     let tasksList = <span>Your list is empty</span>
-    if (props.tasks.length) {
+    if (tasks.length) {
         tasksList = <ul>
-            {props.tasks.map(task => {
+            {tasks.map(task => {
+                const deleteTaskHandler = () => deleteTask(task.id)
                 return (
-                    <li>
+                    <li key={task.id}>
                         <input type="checkbox" checked={task.isDone}/>
                         <span>{task.title}</span>
+                        <Button title='X' onClickHandler={deleteTaskHandler}/>
                     </li>
                 )
             })}
@@ -45,18 +47,18 @@ export const TodoList = (props: TodoListPropsType) => {
 
     return (
         <div>
-            <h3>{props.title}</h3>
+            <h3>{title}</h3>
             <div>
                 <input/>
-                <Btn title={btn_1}/>
+                <Button title={'+'}/>
             </div>
             <ul>
                 {tasksList}
             </ul>
             <div>
-                <Btn title={btn_2}/>
-                <Btn title={btn_3}/>
-                <Btn title={btn_4}/>
+                <Button title={'All'} onClickHandler={() => changeTodoListFilter('All')}/>
+                <Button title={'Active'} onClickHandler={() => changeTodoListFilter('Active')}/>
+                <Button title={'Completed'} onClickHandler={() => changeTodoListFilter('Completed')}/>
             </div>
         </div>
     )
